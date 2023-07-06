@@ -3,8 +3,10 @@ package commands
 import (
 	"context"
 	"flag"
+	"fmt"
 
 	"github.com/google/subcommands"
+	"github.com/isksss/paperma-manager/config"
 )
 
 type DownloadCommand struct {
@@ -26,5 +28,17 @@ func (c *DownloadCommand) SetFlags(f *flag.FlagSet) {
 
 // 本体
 func (c *DownloadCommand) Execute(ctx context.Context, f *flag.FlagSet, args ...interface{}) subcommands.ExitStatus {
+
+	// get config data
+	data, err := config.GetConfig()
+	if err != nil {
+		fmt.Printf("config read error: %v\n", err)
+		return subcommands.ExitFailure
+	}
+
+	// download papermc
+	// TODO: download papermc
+	version := data.PaperVersion
+	fmt.Println(version)
 	return subcommands.ExitSuccess
 }
