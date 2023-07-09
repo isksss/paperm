@@ -7,6 +7,7 @@ type Config struct {
 }
 
 type Server struct {
-	MaxMemory int `json:"max_memory"`
-	MinMemory int `json:"min_memory"`
+	MaxMemory   int      `json:"max_memory"`
+	MinMemory   int      `json:"min_memory"`
+	RestartTime []string `json:"restart_time"`
 }
