@@ -16,22 +16,17 @@ type InitCommand struct {
 	memory  int
 }
 
-// これがサブコマンド名になる
 func (c *InitCommand) Name() string { return "init" }
 
-// コマンド一覧で出てくるサブコマンドの説明
 func (c *InitCommand) Synopsis() string { return "init config file." }
 
-// helpとかで出てくる使い方
 func (c *InitCommand) Usage() string { return "init [option]" }
 
-// flagライブラリでオプションの処理をするやつ
 func (c *InitCommand) SetFlags(f *flag.FlagSet) {
 	f.StringVar(&c.version, "version", "1.20.1", "papermc version")
 	f.IntVar(&c.memory, "memory", 1024, "server memory")
 }
 
-// 本体
 func (c *InitCommand) Execute(ctx context.Context, f *flag.FlagSet, args ...interface{}) subcommands.ExitStatus {
 	configFile := model.Config{}
 	configFile.Server.MaxMemory = c.memory
@@ -44,6 +39,13 @@ func (c *InitCommand) Execute(ctx context.Context, f *flag.FlagSet, args ...inte
 	}
 
 	err = ioutil.WriteFile(config.ConfigFileName, data, 0644)
+	if err != nil {
+		return subcommands.ExitFailure
+	}
+
+	// eula.txt
+	eula := "eula=true"
+	err = ioutil.WriteFile("eula.txt", []byte(eula), 0644)
 	if err != nil {
 		return subcommands.ExitFailure
 	}
