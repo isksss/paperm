@@ -34,6 +34,7 @@ func (c *InitCommand) Execute(ctx context.Context, f *flag.FlagSet, args ...inte
 	configFile.PaperVersion = c.version
 	configFile.Server.RestartTime = append(configFile.Server.RestartTime, "6:00")
 	configFile.Server.RestartTime = append(configFile.Server.RestartTime, "18:00")
+	configFile.JarName = "paper.jar"
 
 	data, err := json.MarshalIndent(configFile, "", "  ")
 	if err != nil {

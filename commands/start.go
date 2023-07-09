@@ -4,6 +4,8 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"os/exec"
+	"strconv"
 	"time"
 
 	"github.com/google/subcommands"
@@ -45,6 +47,31 @@ func (c *StartCommand) Execute(ctx context.Context, f *flag.FlagSet, args ...int
 		parsedTime = append(parsedTime, parsed)
 	}
 
+	// exists java
+	javaCmd := "java"
+	javaBin, err := exec.LookPath(javaCmd)
+	if err != nil {
+		return subcommands.ExitFailure
+	}
+
+	//papermcの起動
+	// opt
+	min := strconv.Itoa(data.Server.MinMemory)
+	max := strconv.Itoa(data.Server.MaxMemory)
+	xms := "-Xms" + min + "M"
+	xmx := "-Xmx" + max + "M"
+	jar := data.JarName
+
+	// server
+	cmd := exec.Command(javaBin, "-jar", xms, xmx, jar)
+	err = cmd.Start()
+	if err != nil {
+		return subcommands.ExitFailure
+	}
+
+	cmd.Wait()
+	//debug
+	fmt.Println("javabin", javaBin)
 	fmt.Println(parsedTime)
 	return subcommands.ExitSuccess
 }

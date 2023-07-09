@@ -80,7 +80,7 @@ func (c *DownloadCommand) Execute(ctx context.Context, f *flag.FlagSet, args ...
 	jarUrl := buildUrl + "/downloads/" + jarName
 
 	// create file
-	file, err := os.Create(jarName)
+	file, err := os.Create(data.JarName)
 	if err != nil {
 		return subcommands.ExitFailure
 	}

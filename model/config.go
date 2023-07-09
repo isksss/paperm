@@ -3,6 +3,7 @@ package model
 type Config struct {
 	// Path to the server jar
 	PaperVersion string `json:"paper_version"`
+	JarName      string
 	Server       Server `json:"server"`
 }
 
