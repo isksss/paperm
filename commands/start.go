@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"io"
 	"os/exec"
 	"strconv"
 	"time"
@@ -64,14 +65,26 @@ func (c *StartCommand) Execute(ctx context.Context, f *flag.FlagSet, args ...int
 
 	// server
 	cmd := exec.Command(javaBin, "-jar", xms, xmx, jar)
+
+	// stdin取得
+	stdin, err := cmd.StdinPipe()
+	if err != nil {
+		fmt.Println(err)
+		return subcommands.ExitFailure
+	}
+
+	// server 起動
 	err = cmd.Start()
 	if err != nil {
 		return subcommands.ExitFailure
 	}
 
+	io.WriteString(stdin, "stop\015")
+
 	cmd.Wait()
 	//debug
 	fmt.Println("javabin", javaBin)
 	fmt.Println(parsedTime)
+	fmt.Println("PaperPID", cmd.Process.Pid)
 	return subcommands.ExitSuccess
 }

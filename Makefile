@@ -10,7 +10,7 @@ build: clean
 
 .PHONY: clean
 clean:
-	rm -rf $(dist)
+	rm -rf $(dist)/*
 
 .PHONY: run
 run: build
