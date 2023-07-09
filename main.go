@@ -19,6 +19,7 @@ func init() {
 	subcommands.Register(subcommands.CommandsCommand(), "")
 	subcommands.Register(&commands.InitCommand{}, "")
 	subcommands.Register(&commands.DownloadCommand{}, "")
+	subcommands.Register(&commands.StartCommand{}, "")
 
 	flag.Parse()
 }
