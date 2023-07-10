@@ -60,6 +60,8 @@ func (c *DownloadCommand) Execute(ctx context.Context, f *flag.FlagSet, args ...
 		return subcommands.ExitFailure
 	}
 
+	fmt.Printf("PaperMC version: %s\n", project.Version)
+
 	// 最新のビルドを取得
 	latestBuilds := project.Builds[len(project.Builds)-1]
 
@@ -80,6 +82,7 @@ func (c *DownloadCommand) Execute(ctx context.Context, f *flag.FlagSet, args ...
 	jarUrl := buildUrl + "/downloads/" + jarName
 
 	// create file
+	fmt.Printf("Download: %s\n", jarName)
 	file, err := os.Create(data.JarName)
 	if err != nil {
 		return subcommands.ExitFailure
@@ -96,6 +99,7 @@ func (c *DownloadCommand) Execute(ctx context.Context, f *flag.FlagSet, args ...
 	if err != nil {
 		return subcommands.ExitFailure
 	}
+	fmt.Printf("Downloaded: %s\n", jarName)
 
 	//Download
 	err = download.Download()
