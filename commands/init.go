@@ -35,6 +35,19 @@ func (c *InitCommand) Execute(ctx context.Context, f *flag.FlagSet, args ...inte
 	configFile.Server.RestartTime = append(configFile.Server.RestartTime, "6:00")
 	configFile.Server.RestartTime = append(configFile.Server.RestartTime, "18:00")
 	configFile.JarName = "paper.jar"
+	configFile.Plugin.Download = true
+
+	//plugin
+	configFile.Plugin.Plugins = append(configFile.Plugin.Plugins,
+		model.Plugins{
+			Name: "geysermc.jar",
+			Url:  "https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/latest/downloads/spigot",
+		},
+		model.Plugins{
+			Name: "floodgate.jar",
+			Url:  "https://download.geysermc.org/v2/projects/floodgate/versions/latest/builds/latest/downloads/spigot",
+		},
+	)
 
 	data, err := json.MarshalIndent(configFile, "", "  ")
 	if err != nil {

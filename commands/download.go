@@ -12,6 +12,7 @@ import (
 	"strconv"
 
 	"github.com/google/subcommands"
+	"github.com/isksss/paperma-manager/commands/download"
 	"github.com/isksss/paperma-manager/config"
 	"github.com/isksss/paperma-manager/model"
 )
@@ -26,7 +27,6 @@ func (c *DownloadCommand) Synopsis() string { return "download the papermc" }
 func (c *DownloadCommand) Usage() string { return "download" }
 
 func (c *DownloadCommand) SetFlags(f *flag.FlagSet) {
-
 }
 
 func (c *DownloadCommand) Execute(ctx context.Context, f *flag.FlagSet, args ...interface{}) subcommands.ExitStatus {
@@ -93,6 +93,12 @@ func (c *DownloadCommand) Execute(ctx context.Context, f *flag.FlagSet, args ...
 	defer resp.Body.Close()
 
 	_, err = io.Copy(file, resp.Body)
+	if err != nil {
+		return subcommands.ExitFailure
+	}
+
+	//Download
+	err = download.Download()
 	if err != nil {
 		return subcommands.ExitFailure
 	}
