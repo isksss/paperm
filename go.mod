@@ -1,4 +1,4 @@
-module github.com/isksss/paperma-manager
+module github.com/isksss/papermc-manager
 
 go 1.20
 
