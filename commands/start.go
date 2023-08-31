@@ -1,12 +1,15 @@
 package commands
 
 import (
+	"bufio"
 	"context"
 	"flag"
 	"fmt"
 	"io"
+	"os"
 	"os/exec"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/google/subcommands"
@@ -58,10 +61,11 @@ func (c *StartCommand) Execute(ctx context.Context, f *flag.FlagSet, args ...int
 	xms := "-Xms" + min + "M"
 	xmx := "-Xmx" + max + "M"
 	jar := data.JarName
+	jarOpt := "nogui"
 
 	for {
 		// server
-		cmd := exec.Command(javaBin, "-jar", xms, xmx, jar)
+		cmd := exec.Command(javaBin, "-jar", xms, xmx, jar, jarOpt)
 
 		// stdin取得
 		stdin, err := cmd.StdinPipe()
@@ -77,45 +81,73 @@ func (c *StartCommand) Execute(ctx context.Context, f *flag.FlagSet, args ...int
 		}
 
 		// 再起動時間
-		now := time.Now()
-		var durations []time.Duration
-		for _, restartTime := range parsedTime {
-			n_h := now.Hour()
-			n_m := now.Minute()
-			r_h := restartTime.Hour()
-			r_m := restartTime.Minute()
-			var next time.Time
-			y := now.Year()
-			m := now.Month()
-			d := now.Day()
-			l := now.Location()
-
-			if n_h >= r_h && n_m >= r_m {
-				next = time.Date(y, m, d+1, r_h, r_m, 0, 0, l)
-			} else {
-				next = time.Date(y, m, d, r_h, r_m, 0, 0, l)
-			}
-
-			duration := next.Sub(now)
-			durations = append(durations, duration)
-		}
+		durations := getDurations(parsedTime)
 
 		duration := findMinDuration(durations)
 
-		announce := time.AfterFunc(duration-1*time.Minute, func() {
+		announceTime := 1 * time.Minute
+		announce := time.AfterFunc(duration-announceTime, func() {
 			msg := fmt.Sprintf("say %s \015", data.Server.AnnounceMessage)
+			fmt.Printf("Announce: %s\n", msg)
 			io.WriteString(stdin, msg)
 		})
 		timer := time.AfterFunc(duration, func() {
 			io.WriteString(stdin, "stop\015")
 		})
+
+		pid := cmd.Process.Pid
 		fmt.Println("Restart:" + duration.String())
+		fmt.Printf("Server start: %d\n", pid)
+		// 標準入力を監視するゴルーチンを起動
+		allstopchan := make(chan bool)
+		go func() {
+			reader := bufio.NewReader(os.Stdin)
+			for {
+				fmt.Printf("> ")
+				input, _ := reader.ReadString('\n')
+
+				if strings.TrimSpace(input) == "paperstop" {
+					// サーバー停止
+					fmt.Printf("Server stop: %d\n", pid)
+					io.WriteString(stdin, "stop\015")
+					return
+				}
+
+				if strings.TrimSpace(input) == "allstop" {
+					// papermc-managerを停止
+					fmt.Printf("Server stop: %d\n", pid)
+					io.WriteString(stdin, "stop\015")
+					allstopchan <- true
+					return
+				}
+
+				// 残り時間を表示
+				if strings.TrimSpace(input) == "time" {
+
+					nowDuration := findMinDuration(getDurations(parsedTime))
+					fmt.Printf("Remaining time: %s\n", nowDuration.String())
+				}
+
+				// サーバーにコマンドを送信
+				if strings.TrimSpace(input) == "cmd" {
+					fmt.Printf("cmd >>> ")
+					input, _ := reader.ReadString('\n')
+					io.WriteString(stdin, input)
+				}
+			}
+		}()
 		cmd.Wait()
 		announce.Stop()
 		timer.Stop()
-	}
 
-	return subcommands.ExitSuccess
+		select {
+		case <-allstopchan:
+			fmt.Println("Done!")
+			return subcommands.ExitSuccess
+		default:
+			fmt.Println("Restarting...")
+		}
+	}
 }
 
 func findMinDuration(durations []time.Duration) time.Duration {
@@ -131,4 +163,31 @@ func findMinDuration(durations []time.Duration) time.Duration {
 	}
 
 	return min
+}
+
+func getDurations(parsedTime []time.Time) []time.Duration {
+	now := time.Now()
+	var durations []time.Duration
+	for _, restartTime := range parsedTime {
+		n_h := now.Hour()
+		n_m := now.Minute()
+		r_h := restartTime.Hour()
+		r_m := restartTime.Minute()
+		var next time.Time
+		y := now.Year()
+		m := now.Month()
+		d := now.Day()
+		l := now.Location()
+
+		if n_h >= r_h && n_m >= r_m {
+			next = time.Date(y, m, d+1, r_h, r_m, 0, 0, l)
+		} else {
+			next = time.Date(y, m, d, r_h, r_m, 0, 0, l)
+		}
+
+		duration := next.Sub(now)
+		durations = append(durations, duration)
+	}
+
+	return durations
 }
