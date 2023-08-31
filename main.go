@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/google/subcommands"
-	"github.com/isksss/paperma-manager/commands"
+	"github.com/isksss/papermc-manager/commands"
 )
 
 func main() {

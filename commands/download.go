@@ -12,9 +12,9 @@ import (
 	"strconv"
 
 	"github.com/google/subcommands"
-	"github.com/isksss/paperma-manager/commands/download"
-	"github.com/isksss/paperma-manager/config"
-	"github.com/isksss/paperma-manager/model"
+	"github.com/isksss/papermc-manager/commands/download"
+	"github.com/isksss/papermc-manager/config"
+	"github.com/isksss/papermc-manager/model"
 )
 
 type DownloadCommand struct {

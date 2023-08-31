@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 
-	"github.com/isksss/paperma-manager/model"
+	"github.com/isksss/papermc-manager/model"
 )
 
 func GetConfig() (model.Config, error) {

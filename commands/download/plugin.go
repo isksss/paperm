@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"sync"
 
-	"github.com/isksss/paperma-manager/config"
+	"github.com/isksss/papermc-manager/config"
 )
 
 func Download() error {
