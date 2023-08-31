@@ -13,7 +13,7 @@ import (
 	"time"
 
 	"github.com/google/subcommands"
-	"github.com/isksss/papermc-manager/config"
+	"github.com/isksss/paperm/config"
 )
 
 type StartCommand struct {

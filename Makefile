@@ -1,4 +1,4 @@
-bin := papermc-manager
+bin := paperm
 dist := dist
 
 .PHONY: all

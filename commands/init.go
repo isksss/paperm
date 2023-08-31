@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 
 	"github.com/google/subcommands"
-	"github.com/isksss/papermc-manager/config"
-	"github.com/isksss/papermc-manager/model"
+	"github.com/isksss/paperm/config"
+	"github.com/isksss/paperm/model"
 )
 
 type InitCommand struct {
