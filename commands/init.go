@@ -36,6 +36,7 @@ func (c *InitCommand) Execute(ctx context.Context, f *flag.FlagSet, args ...inte
 	configFile.Server.MaxMemory = c.memory
 	configFile.Server.MinMemory = c.memory
 	configFile.PaperVersion = c.version
+	configFile.WaterfallVersion = "1.20"
 	configFile.Server.RestartTime = append(configFile.Server.RestartTime, "6:00")
 	configFile.Server.RestartTime = append(configFile.Server.RestartTime, "18:00")
 	configFile.JarName = "server.jar"
