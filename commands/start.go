@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/google/subcommands"
+	"github.com/isksss/paperm/commands/download"
 	"github.com/isksss/paperm/config"
 )
 
@@ -29,6 +30,17 @@ func (c *StartCommand) SetFlags(f *flag.FlagSet) {
 }
 
 func (c *StartCommand) Execute(ctx context.Context, f *flag.FlagSet, args ...interface{}) subcommands.ExitStatus {
+	// Download
+	if err := download.ServerDownload(); err != nil {
+		fmt.Printf("download error: %v\n", err)
+		return subcommands.ExitFailure
+	}
+
+	// Plugin download
+	if err := download.PluginDownload(); err != nil {
+		fmt.Printf("plugin download error: %v\n", err)
+		return subcommands.ExitFailure
+	}
 
 	// Get restart time.
 	data, err := config.GetConfig()

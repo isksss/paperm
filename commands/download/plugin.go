@@ -11,7 +11,7 @@ import (
 	"github.com/isksss/paperm/config"
 )
 
-func Download() error {
+func PluginDownload() error {
 	// get config data
 	data, err := config.GetConfig()
 	if err != nil {

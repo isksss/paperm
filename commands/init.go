@@ -12,6 +12,7 @@ import (
 )
 
 type InitCommand struct {
+	mode    string
 	version string
 	memory  int
 }
@@ -23,18 +24,21 @@ func (c *InitCommand) Synopsis() string { return "init config file." }
 func (c *InitCommand) Usage() string { return "init [option]" }
 
 func (c *InitCommand) SetFlags(f *flag.FlagSet) {
+	f.StringVar(&c.mode, "mode", "paper", "server mode")
 	f.StringVar(&c.version, "version", "1.20.1", "papermc version")
 	f.IntVar(&c.memory, "memory", 1024, "server memory")
 }
 
 func (c *InitCommand) Execute(ctx context.Context, f *flag.FlagSet, args ...interface{}) subcommands.ExitStatus {
 	configFile := model.Config{}
+	configFile.Url = "https://papermc.io/api/v2/projects/"
+	configFile.Mode = c.mode
 	configFile.Server.MaxMemory = c.memory
 	configFile.Server.MinMemory = c.memory
 	configFile.PaperVersion = c.version
 	configFile.Server.RestartTime = append(configFile.Server.RestartTime, "6:00")
 	configFile.Server.RestartTime = append(configFile.Server.RestartTime, "18:00")
-	configFile.JarName = "paper.jar"
+	configFile.JarName = "server.jar"
 	configFile.Plugin.Download = true
 
 	//plugin

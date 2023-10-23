@@ -2,10 +2,13 @@ package model
 
 type Config struct {
 	// Path to the server jar
-	PaperVersion string `json:"paper_version"`
-	JarName      string
-	Server       Server `json:"server"`
-	Plugin       Plugin `json:"plugin"`
+	Url              string `json:"url"`
+	Mode             string `json:"mode"`
+	PaperVersion     string `json:"paper_version"`
+	WaterfallVersion string `json:"waterfall_version"`
+	JarName          string
+	Server           Server `json:"server"`
+	Plugin           Plugin `json:"plugin"`
 }
 
 type Server struct {
